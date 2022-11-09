@@ -19,6 +19,8 @@ function App() {
 
   let [modal, setModal] = useState([false, false, false]);
 
+  let [title_state, setTitleState] = useState(0)
+
   function asd() {
     let cpy = [...title_name];
     cpy[0] = "워라";
@@ -44,19 +46,23 @@ function App() {
   
 
   function Modal(props) {
-    let [btnEdit, setBtnEdit] = useState(false);
     return (
       <div className="modal">
-        {
-           btnEdit == true ? <h4>{props.title_name[1]}</h4> : <h4>제목</h4>
-        }
-        <p>날짜</p>
+        <p>{props.title_name[props.title_state]}</p>
         <p>상세내용</p>
-        <button onClick={() => setBtnEdit(true)}>글 수정</button>
+        <button onClick={() => {props.setTitle(['헬로우', '하이', '방갈로'])}}>글 수정</button>
       </div>
     )
   }
 
+  function modalState(i) {
+    setTitleState(i)
+    if(!modal[i]) {
+      setModal(true);
+    }else {
+      setModal(false)
+    }
+  }
 
   return (
     <div className="App">
@@ -87,20 +93,7 @@ function App() {
         main_title.map(function(title, i) {
           return (
             <div className="list" key={i}>
-              <h4 onClick={() => {
-                if(modal[i]) {
-                  let cpy = [...modal];
-                  cpy[i] = false
-                  setModal(cpy);
-                  return;
-                }else {
-                  let cpy = [...modal];
-                  cpy[i] = true
-                  setModal(cpy);
-                  return;
-                }
-                
-              }}>{ main_title[i] } <span className="mouse" onClick={() => goodState(i)}>💪</span> { good[i] } </h4>
+              <h4 title_name={title_name[i]} onClick={() => modalState(i)}>{ title_name[i] } <span className="mouse" onClick={() => goodState(i)}>💪</span> { good[i] } </h4>
               <p>2월 2일 글 발행</p>
             </div>
           )
@@ -108,7 +101,7 @@ function App() {
       }
 
       {
-        modal == true ? <Modal title_name={title_name} setTitle={setTitle} />: null
+        modal == true ? <Modal title_name={title_name} setTitle={setTitle} title_state={title_state} />: null
       }
       <div className="list">
         <p onClick={() => asd()}>{ title_name[0] }</p>
