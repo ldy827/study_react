@@ -19,8 +19,12 @@ function App() {
 
   let [modal, setModal] = useState([false, false, false]);
 
-  let [title_state, setTitleState] = useState(0)
+  let [title_state, setTitleState] = useState(0);
 
+  let [inputText, setInputText] = useState('');
+
+  let inputData = '';
+  
   function asd() {
     let cpy = [...title_name];
     cpy[0] = "워라";
@@ -48,7 +52,7 @@ function App() {
   function Modal(props) {
     return (
       <div className="modal">
-        <p>{props.title_name[props.title_state]}</p>
+        <p>{props.title_name[title_state]}</p>
         <p>상세내용</p>
         <button onClick={() => {props.setTitle(['헬로우', '하이', '방갈로'])}}>글 수정</button>
       </div>
@@ -64,11 +68,16 @@ function App() {
     }
   }
 
+  function sendInput() {
+    setInputText(inputData)
+  }
+
   return (
     <div className="App">
       <div className="black-nav">
         <h4>{logo}</h4>
       </div>
+      <h3>{inputText}</h3>
       <button onClick={() => {
         editContent();
       }}>글 수정</button>
@@ -90,12 +99,21 @@ function App() {
       </button>
 
       {
-        main_title.map(function(title, i) {
+        title_name.map(function(title, i) {
           return (
-            <div className="list" key={i}>
-              <h4 title_name={title_name[i]} onClick={() => modalState(i)}>{ title_name[i] } <span className="mouse" onClick={() => goodState(i)}>💪</span> { good[i] } </h4>
-              <p>2월 2일 글 발행</p>
-            </div>
+            <>
+              <div className="list" key={i}>
+                <h4 title_name={title_name[i]} onClick={() => modalState(i)}>{ title_name[i] } <span className="mouse" onClick={(e) => {e.stopPropagation();goodState(i);}}>💪</span> { good[i] } </h4>
+                <p>2월 2일 글 발행
+                  <button onClick={() => {
+                    let cpy = [...title_name];
+                    cpy.splice(i, 1);
+                    setTitle(cpy);
+                  }}>삭제</button>
+                </p>
+                
+              </div>
+            </>
           )
         })
       }
@@ -103,10 +121,15 @@ function App() {
       {
         modal == true ? <Modal title_name={title_name} setTitle={setTitle} title_state={title_state} />: null
       }
-      <div className="list">
-        <p onClick={() => asd()}>{ title_name[0] }</p>
-      </div>
       
+      <input onChange={(event) => {inputData = event.target.value}}>
+        
+      </input>
+      <button onClick={() => {
+        let cpy = [...title_name];
+        cpy.unshift(inputData);
+        setTitle(cpy);
+      }}>입력</button>
       
     </div>
   );
